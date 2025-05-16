@@ -9,6 +9,7 @@ USERID=$(id -u)
 if [ $USERID -ne 0 ]
 then
     echo "please install with roort access"
+    exit 1 #give other than zero, upto 127
 else
     echo "Don't proceed to install and install with root access"
 fi
