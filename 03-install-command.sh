@@ -8,10 +8,17 @@ USERID=$(id -u)
 
 if [ $USERID -ne 0 ]
 then
-    echo "please install with roort access"
+    echo "Error: Please install with root access"
     exit 1 #give other than zero, upto 127
 else
-    echo "Don't proceed to install and install with root access"
+    echo "you are running with root access"
 fi
 
 dnf install mysql -y
+
+if [ $? -eq 0]
+then
+ echo "Installing mysql is success"
+ else
+ echo "Installing mysql is success"
+ fi
