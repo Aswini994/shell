@@ -8,7 +8,9 @@ USERID=$(id -u)
 
 if [ $USERID -ne 0 ]
 then
-    echo "Don't proceed to install and install with root access"
-else
     echo "please install with roort access"
+else
+    echo "Don't proceed to install and install with root access"
 fi
+
+dnf install mysql -y
