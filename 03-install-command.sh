@@ -20,7 +20,7 @@ if [ $? -eq 0]
 then
  echo "Installing mysql is success"
  else
- echo "Installing mysql is success"
+ echo "Installing mysql is failure"
  exit 1
  
  fi
