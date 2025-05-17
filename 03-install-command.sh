@@ -6,6 +6,8 @@
 
 USERID=$(id -u)
 
+#userid=0 for sudo access
+
 if [ $USERID -ne 0 ]
 then
     echo "Error: Please install with root access"
@@ -14,7 +16,7 @@ else
     echo "you are running with root access"
 fi
 
-dnf install mysql -y
+dnf install mysqqwewewwel -y
 
 if [ $? -eq 0]
 then
