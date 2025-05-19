@@ -15,10 +15,10 @@ echo "Script started executing at: $(date)"| tee -a $LOG_FILE
 
 if [ $USERID -ne 0 ]
 then
-    echo -e "$R ERROR:: Please run this script with root access $N" &>> $LOG_FILE
+    echo -e "$R ERROR:: Please run this script with root access $N" | tee -a $LOG_FILE
     exit 1 #give other than 0 upto 127
 else
-    echo "You are running with root access" &>> $LOG_FILE
+    echo "You are running with root access" | tee -a $LOG_FILE
 fi
 
 # validate functions takes input as exit status, what command they tried to install
@@ -37,7 +37,7 @@ do
     if [ $? -ne 0 ]
 then
     echo "$package is not installed... going to install it"| tee -a $LOG_FILE
-    dnf install $package -y| tee -a $LOG_FILE
+    dnf install $package -y &>>$LOG_FILE
     VALIDATE $? "$package"
 else
     echo -e "Nothing to do $package... $Y already installed $N"| tee -a $LOG_FILE
