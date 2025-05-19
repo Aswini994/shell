@@ -5,8 +5,7 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 LOGS_FOLDER="/var/log/shell-script-logs"
-SCRIPT_NAME=$(echo $0 | cut -d "." -f1
-)
+SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 
 mkdir -p $LOGS_FOLDER
@@ -55,7 +54,7 @@ dnf list installed nginx &>> $LOG_FILE
 if [ $? -ne 0 ]
 then
  echo "nginx is not installed, going to install it"
- dnf install nginx -y &>> $LOG_FILE
+ dnf install nginx -y &>> $LOG_FILE 
  VALIDATE $? "NGINX"
  else
     echo -e "Nothing to do $Y Already Installing nginx$N" &>> $LOG_FILE
