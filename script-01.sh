@@ -2,6 +2,7 @@
 
 GREETING="hELLO, GOOD MORNING"
 echo "$GREETING"
+echo "PID of SCRIPT-1: $$"
 
 #. represents current directory
 
