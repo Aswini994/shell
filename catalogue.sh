@@ -42,8 +42,14 @@ VALIDATE $? "ENABLING DEFAULT NODEJS"
 dnf install nodejs -y &>>$LOG_FILE
 VALIDATE $? "INSTALLING NODEJA SERVICE"
 
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
-VALIDATE $? "CREATING SYSTEM USER"
+id roboshop
+if [ $? -ne 0 ]
+then
+    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop &>>$LOG_FILE
+    VALIDATE $? "CREATING SYSTEM USER"
+else
+    ECHO -E "SYSTEM USER ALREADY CREATED"
+fi
 
 mkdir /app &>>$LOG_FILE
 VALIDATE $? "CREATING APP DIRECTORY"
