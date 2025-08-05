@@ -1,5 +1,6 @@
 #!/bin/bash
 
+START_TIME=$(date +%s)
 USERID=$(id -u)
 R="\e[31m"
 G="\e[32m"
@@ -11,9 +12,9 @@ LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log"
 SCRIPT_DIR=$PWD
 
 mkdir -p $LOGS_FOLDER
-echo "Script started executing at: $(date)"| tee -a $LOG_FILE
+echo "Script started executing at: $(date)" | tee -a $LOG_FILE
 
-# check the user has root previalages or not
+# check the user has root priveleges or not
 if [ $USERID -ne 0 ]
 then
     echo -e "$R ERROR:: Please run this script with root access $N" | tee -a $LOG_FILE
@@ -22,13 +23,14 @@ else
     echo "You are running with root access" | tee -a $LOG_FILE
 fi
 
+
 # validate functions takes input as exit status, what command they tried to install
 VALIDATE(){
     if [ $1 -eq 0 ]
     then
-        echo -e "$2 is ... $G SUCCESS $N"| tee -a $LOG_FILE
+        echo -e "$2 is ... $G SUCCESS $N" | tee -a $LOG_FILE
     else
-        echo -e "$2 is ... $R FAILURE $N"| tee -a $LOG_FILE
+        echo -e "$2 is ... $R FAILURE $N" | tee -a $LOG_FILE
         exit 1
     fi
 }
@@ -56,35 +58,41 @@ cd /app
 unzip /tmp/shipping.zip &>>$LOG_FILE
 VALIDATE $? "unzipping shipping"
 
-mvn clean package&>>$LOG_FILE
-VALIDATE $? "packaging the shipping application"
+mvn clean package  &>>$LOG_FILE
+VALIDATE $? "Packaging the shipping application"
 
-mv target/shipping-1.0.jar shipping.jar&>>$LOG_FILE
-VALIDATE $? "moving and renaming jar files"
+mv target/shipping-1.0.jar shipping.jar  &>>$LOG_FILE
+VALIDATE $? "Moving and renaming Jar file"
 
+cp $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service
 
-cp  $SCRIPT_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOG_FILE
-VALIDATE $? "COPYING shipping SERVICE"
+systemctl daemon-reload &>>$LOG_FILE
+VALIDATE $? "Daemon Realod"
 
+systemctl enable shipping  &>>$LOG_FILE
+VALIDATE $? "Enabling Shipping"
 
-systemctl daemon-reload&>>$LOG_FILE
-VALIDATE $? "daemon reload"
+systemctl start shipping &>>$LOG_FILE
+VALIDATE $? "Starting Shipping"
 
-systemctl enable shipping &>>$LOG_FILE
-systemctl start shipping
+dnf install mysql -y  &>>$LOG_FILE
+VALIDATE $? "Install MySQL"
 
-VALIDATE $? "starting shipping"
+mysql -h mysql.tejaswini.site -u root -pRoboShop@1 -e 'use cities' &>>$LOG_FILE
+if [ $? -ne 0 ]
+then
+    mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/schema.sql &>>$LOG_FILE
+    mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/app-user.sql  &>>$LOG_FILE
+    mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/master-data.sql &>>$LOG_FILE
+    VALIDATE $? "Loading data into MySQL"
+else
+    echo -e "Data is already loaded into MySQL ... $Y SKIPPING $N"
+fi
 
-dnf install mysql -y&>>$LOG_FILE
-VALIDATE $? "installing mysql"
+systemctl restart shipping &>>$LOG_FILE
+VALIDATE $? "Restart shipping"
 
-mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/schema.sql&>>$LOG_FILE
+END_TIME=$(date +%s)
+TOTAL_TIME=$(( $END_TIME - $START_TIME ))
 
-mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/app-user.sql&>>$LOG_FILE
-
-mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/master-data.sql&>>$LOG_FILE
-VALIDATE $? "Loading data into mysql"
-
-systemctl restart shipping&>>$LOG_FILE
-VALIDATE $? "Restarting shipping"
-
+echo -e "Script exection completed successfully, $Y time taken: $TOTAL_TIME seconds $N" | tee -a $LOG_FILE
