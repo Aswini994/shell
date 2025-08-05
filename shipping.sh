@@ -69,11 +69,11 @@ VALIDATE $? "starting shipping"
 dnf install mysql -y&>>$LOG_FILE
 VALIDATE $? "installing mysql"
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/schema.sql&>>$LOG_FILE
+mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/schema.sql&>>$LOG_FILE
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/app-user.sql&>>$LOG_FILE
+mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/app-user.sql&>>$LOG_FILE
 
-mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -pRoboShop@1 < /app/db/master-data.sql&>>$LOG_FILE
+mysql -h mysql.tejaswini.site -uroot -pRoboShop@1 < /app/db/master-data.sql&>>$LOG_FILE
 VALIDATE $? "Loading data into mysql"
 
 systemctl restart shipping&>>$LOG_FILE
