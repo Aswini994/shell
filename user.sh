@@ -66,18 +66,10 @@ VALIDATE $? "UNZIPPING user"
 npm install &>>$LOG_FILE
 VALIDATE $? "INSTALLING DEPENDENCIES"
 
-cp  $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOG_FILE
+cp $SCRIPT_DIR/user.service /etc/systemd/system/user.service &>>$LOG_FILE
 VALIDATE $? "COPYING user SERVICE"
 
 systemctl daemon-reload &>>$LOG_FILE
 systemctl enable user  &>>$LOG_FILE
 systemctl start user &>>$LOG_FILE
-
-VALIDATE $? "starting user"
-
-cp $SCRIPT_DIR/mongodb.repo /etc/yum.repos.d/mongodb.repo
-
-dnf install mongodb-mongosh -y &>>$LOG_FILE
-VALIDATE $? "installing mongodb client"
-
-mongosh --host mongodb.tejaswini.site </app/db/master-data.js &>>$LOG_FILE
+VALIDATE $? "Starting user"
