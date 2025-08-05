@@ -45,7 +45,7 @@ else
     echo -e "SYSTEM USER ALREADY CREATED"
 fi
 
-mkdir /app
+mkdir -p /app &>>$LOG_FILE
 
 
 curl -L -o /tmp/shipping.zip https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip &>>$LOG_FILE
